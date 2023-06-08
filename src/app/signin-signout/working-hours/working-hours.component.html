@@ -1,0 +1,27 @@
+<section class="vehicleList_pg">
+  <div class="inner_header_bx">
+    <div class="grid">
+      <div class="col-12 md:col-9 inner_title_bx">
+        <h1>Working Hours list</h1>
+      </div>
+      <!-- END C/inner_title_bx -->
+    </div>
+    <!-- END C/grid -->
+  </div>
+  <!-- END C/inner_header_bx -->
+  <article class="gridT_bx">
+    <app-data-list
+      [columns]="cols"
+      [tableActions]="actions"
+      [disablelazyLoading]="true"
+      [dataItems]="dataItems"
+    >
+    </app-data-list>
+  </article>
+</section>
+<!-- END C/_pg -->
+
+<ng-template #hoursTemplate let-rowData="rowData">
+  <div [ngClass]="{'p-error' : rowData.workingHours > '08:00'}">
+  {{ rowData.workingHours | slice:0:5}}</div>
+</ng-template>

@@ -1,0 +1,8 @@
+
+<p-inputSwitch *ngIf="column.isEditable"
+(onChange)="column?.onEdite ? column?.onEdite(rowData):undefined"
+ [(ngModel)]="rowData[column.fieldName]"></p-inputSwitch>
+
+<p-inputSwitch *ngIf="!column.isEditable"
+ [disabled]="true"
+ [(ngModel)]="rowData[column.fieldName]"></p-inputSwitch>

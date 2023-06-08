@@ -1,0 +1,22 @@
+<ng-container [ngSwitch]="column.type">
+    <ng-container *ngSwitchCase="columnTypes.STATUS">
+      <app-status-col [column]="column" [rowData]="rowData"></app-status-col>
+    </ng-container>
+
+    <ng-container *ngSwitchCase="columnTypes.DATE">
+      <app-date-col [column]="column" [rowData]="rowData" [enableEdit]="true"></app-date-col>
+    </ng-container>
+    <ng-container *ngSwitchCase="columnTypes.LINK">
+      <app-link-col [column]="column" [rowData]="rowData"></app-link-col>
+    </ng-container>
+    <ng-container *ngSwitchCase="columnTypes.TEMPLATE">
+      <ng-container
+      [ngTemplateOutlet]="column.template ?? null"
+      [ngTemplateOutletContext] ="{rowData,column}"
+      >
+      </ng-container>
+    </ng-container>
+    <ng-container *ngSwitchDefault>
+      {{ rowData[column.fieldName] }}
+    </ng-container>
+  </ng-container>

@@ -1,0 +1,261 @@
+<p-table
+  *ngIf="!enableExpand"
+  [columns]="columns"
+  [value]="dataItems"
+  [responsive]="true"
+  [totalRecords]="paginationMetaData?.TotalItemCount ?? dataItems?.length"
+  [paginator]="true"
+  [first]="paginationMetaData?.FirstItemOnPage ?? 0"
+  [rows]="paginationMetaData?.PageSize ?? 10"
+  [loading]="loading"
+  [lazy]="!disablelazyLoading"
+  (onLazyLoad)="getData($event)"
+  [rowsPerPageOptions]="[10, 20, 30, 40, 50]"
+  [resizableColumns]="true"
+  [showCurrentPageReport]="true"
+>
+  <ng-template pTemplate="header" let-columns>
+    <tr>
+      <th *ngIf="enableDargDrop"></th>
+      <th *ngIf="tableActions && tableActions.length > 0">
+        actions
+      </th>
+      <ng-container *ngFor="let col of columns | hiddenColumnFilter">
+        <th pSortableColumn="{{ col.disableSort ? undefined : col.fieldName }}">
+          {{ col.headerName }}
+          <p-sortIcon
+            *ngIf="!col.disableSort"
+            field="col.fieldName"
+          ></p-sortIcon>
+        </th>
+      </ng-container>
+    </tr>
+    <tr>
+      <th *ngIf="enableDargDrop"></th>
+      <th *ngIf="tableActions && tableActions?.length > 0"></th>
+      <ng-container *ngFor="let col of columns | hiddenColumnFilter">
+        <th *ngIf="col.searchable">
+          <p-columnFilter
+            field="{{ col.fieldName }}"
+            matchMode="contains"
+            [showMenu]="false"
+          >
+            <ng-template
+              pTemplate="filter"
+              let-value
+              let-filter="filterCallback"
+            >
+              <input
+                type="text"
+                pInputText
+                [ngModel]="value"
+                (ngModelChange)="filter($event)"
+                class="p-inputtext"
+                placeholder="search Here"
+              />
+            </ng-template>
+          </p-columnFilter>
+        </th>
+        <th *ngIf="!col?.searchable"></th>
+      </ng-container>
+    </tr>
+  </ng-template>
+  <ng-template
+    pTemplate="body"
+    let-rowData
+    let-columns="columns"
+    let-index="rowIndex"
+  >
+    <tr
+      pDraggable="row"
+      pDroppable="row"
+      [dragEffect]="'copyMove'"
+      [dragHandle]="'.drag-handle'"
+      [pDraggableDisabled]="!enableDargDrop"
+      [pDroppableDisabled]="!enableDargDrop"
+      (onDragStart)="onDragStart(rowData)"
+      (onDragEnd)="onDragEnd(rowData)"
+      (onDragEnter)="onDragEnter(rowData)"
+      (onDragLeave)="onDragLeave(rowData)"
+      (onDrop)="finishDrop(rowData)"
+      [class.isDragActive]="rowData.IsDragActive"
+      [class.isDropActive]="rowData.IsDropActive"
+    >
+      <td class="drag-handle" *ngIf="enableDargDrop">
+        <i class="pi pi-bars drag-handle"></i>
+      </td>
+
+      <ng-container *ngIf="tableActions && tableActions.length > 0">
+        <td>
+          <div>
+            <p-button
+              pRipple
+              icon="pi pi-ellipsis-v"
+              (click)="menu.toggle($event)"
+            ></p-button>
+            <p-overlayPanel #menu [dismissable]="true">
+              <ng-template pTemplate>
+                <app-data-list-actions
+                  *ngFor="let action of tableActions"
+                  [tableAction]="action"
+                  [rowData]="rowData"
+                  (click)="menu.hide()"
+                ></app-data-list-actions>
+              </ng-template>
+            </p-overlayPanel>
+            <div #actualTarget></div>
+            <!-- End c/ddlmenu -->
+          </div>
+        </td>
+      </ng-container>
+
+      <td *ngFor="let column of columns | hiddenColumnFilter">
+        <app-data-list-body
+          [column]="column"
+          [rowData]="rowData"
+        ></app-data-list-body>
+      </td>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="emptymessage" let-columns>
+    <tr>
+      <td
+        class="text-center"
+        [attr.colspan]="
+          columns.length +
+          (tableActions && tableActions.length > 0 ? 1 : 0) +
+          (enableDargDrop ? 1 : 0)
+        "
+      >
+         NoData
+      </td>
+    </tr>
+  </ng-template>
+
+  <ng-template pTemplate="paginatorleft" let-state>
+    <span class="totalRecords">'total Records': {{state.totalRecords}}</span>
+ </ng-template>
+</p-table>
+
+<p-treeTable
+  *ngIf="enableExpand"
+  [value]="treeNodes"
+  [columns]="columns"
+  [totalRecords]="paginationMetaData?.TotalItemCount ?? dataItems?.length ?? 0"
+  [paginator]="true"
+  [first]="paginationMetaData?.FirstItemOnPage ?? 0"
+  [rows]="paginationMetaData?.PageSize ?? 10"
+  [loading]="loading"
+  [lazy]="tableMode == tableModes.LISTPAGE"
+  (onLazyLoad)="getData($event)"
+  (onNodeExpand)="onRowExpand($event)"
+  [rowsPerPageOptions]="[10, 20, 30, 40, 50]"
+  [resizableColumns]="true"
+  dataKey="Id"
+>
+  <ng-template pTemplate="header" let-columns>
+    <tr>
+      <th></th>
+      <th *ngIf="enableDargDrop"></th>
+
+      <th
+        *ngFor="let col of columns | hiddenColumnFilter"
+        ttSortableColumn="{{ col.disableSort ? undefined : col.fieldName }}"
+      >
+        {{ col.headerName }}
+        <p-treeTableSortIcon
+          *ngIf="!col.disableSort"
+          field="col.fieldName"
+        ></p-treeTableSortIcon>
+      </th>
+      <th *ngIf="tableActions && tableActions.length > 0">Actions</th>
+    </tr>
+    <tr>
+      <th *ngIf="enableDargDrop"></th>
+      <ng-container *ngFor="let col of columns | hiddenColumnFilter">
+        <th *ngIf="col.searchable">
+          <p-columnFilter
+            field="{{ col.fieldName }}"
+            matchMode="contains"
+            [showMenu]="false"
+          >
+            <ng-template
+              pTemplate="filter"
+              let-value
+              let-filter="filterCallback"
+            >
+              <input
+                type="text"
+                pInputText
+                [ngModel]="value"
+                (ngModelChange)="filter($event)"
+                class="p-inputtext"
+                placeholder="search Here"
+              />
+            </ng-template>
+          </p-columnFilter>
+        </th>
+        <th *ngIf="!col?.searchable"></th>
+      </ng-container>
+      <th *ngIf="tableActions && tableActions?.length > 0"></th>
+    </tr>
+  </ng-template>
+  <ng-template
+    pTemplate="body"
+    let-rowNode
+    let-rowData="rowData"
+    let-columns="columns"
+  >
+    <tr
+      pDraggable="row"
+      pDroppable="row"
+      [dragEffect]="'copyMove'"
+      [dragHandle]="'.drag-handle'"
+      [pDraggableDisabled]="!enableDargDrop"
+      [pDroppableDisabled]="!enableDargDrop"
+      (onDragStart)="onDragStart(rowData)"
+      (onDragEnd)="onDragEnd(rowData)"
+      (onDragEnter)="onDragEnter(rowData)"
+      (onDragLeave)="onDragLeave(rowData)"
+      (onDrop)="finishDrop(rowData)"
+      [class.isDragActive]="rowData.IsDragActive"
+      [class.isDropActive]="rowData.IsDropActive"
+    >
+      <td>
+        <p-treeTableToggler [rowNode]="rowNode"></p-treeTableToggler>
+      </td>
+      <td class="drag-handle" *ngIf="enableDargDrop">
+        <i class="pi pi-bars drag-handle"></i>
+      </td>
+
+      <td *ngFor="let column of columns | hiddenColumnFilter">
+        <app-data-list-body
+          [column]="column"
+          [rowData]="rowData"
+        ></app-data-list-body>
+      </td>
+      <ng-container *ngIf="tableActions && tableActions.length > 0">
+        <td>
+          <div>
+            <p-button
+              pRipple
+              icon="pi pi-ellipsis-v"
+              (click)="menu.toggle($event)"
+            ></p-button>
+            <p-overlayPanel  #menu  [dismissable]="true">
+              <ng-template pTemplate>
+                <app-data-list-actions
+                 (click)="menu.hide()"
+                  *ngFor="let action of tableActions"
+                  [tableAction]="action"
+                  [rowData]="rowData"
+                ></app-data-list-actions>
+              </ng-template>
+            </p-overlayPanel>
+            <!-- End c/ddlmenu -->
+          </div>
+        </td>
+      </ng-container>
+    </tr>
+  </ng-template>
+</p-treeTable>

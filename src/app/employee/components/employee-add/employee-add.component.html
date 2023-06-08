@@ -1,0 +1,77 @@
+<h3>Add new employee</h3>
+
+<form (ngSubmit)="onSubmit()" #employeeForm="ngForm">
+  <div class="form-group col-6 m-2">
+    <label for="name">Name</label>
+    <input
+      type="text"
+      class="form-control"
+      id="name"
+      required
+      [(ngModel)]="employee.name"
+      name="name"
+      #name="ngModel"
+    />
+    <div *ngIf="name.invalid && (name.dirty || name.touched)" class="alert p-error">
+      <div *ngIf="name.errors?.['required']">Name is required.</div>
+    </div>
+  </div>
+
+  <div class="form-group col-6 m-2">
+    <label for="address">Address</label>
+    <input
+      type="text"
+      class="form-control"
+      id="address"
+      [(ngModel)]="employee.address"
+      name="address"
+      required
+    />
+  </div>
+
+  <div class="form-group col-6 m-2">
+    <label for="emailAddress">email Address</label>
+    <input
+      class="form-control"
+      id="emailAddress"
+      required
+      [(ngModel)]="employee.emailAddress"
+      name="emailAddress"
+      type="email"
+      [email]="true"
+    />
+  </div>
+
+  <div class="form-group col-6 m-2">
+    <label for="birthDate">Birth Date</label>
+    <input
+      type="date"
+      class="form-control"
+      id="birthDate"
+      [(ngModel)]="employee.birthDate"
+      name="birthDate"
+      required
+    />
+  </div>
+  <div class="form-group col-6 m-2">
+    <label for="mobileNumber">Mobile Number</label>
+    <input
+      class="form-control"
+      id="emailAddress"
+      required
+      [(ngModel)]="employee.mobileNumber"
+      name="mobileNumber"
+      type="text"
+      minlength="11"
+      maxlength="11"
+    />
+  </div>
+
+  <button
+    type="submit"
+    class="btn btn-success m-3"
+    [disabled]="!employeeForm.form.valid"
+  >
+    Submit
+  </button>
+</form>

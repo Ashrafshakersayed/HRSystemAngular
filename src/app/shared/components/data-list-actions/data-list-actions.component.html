@@ -1,0 +1,5 @@
+<div>
+<a (click)="tableAction.handler(rowData)" *ngIf="tableAction.isHidden == undefined || !(tableAction?.isHidden(rowData))"pRipple>
+  {{ tableAction.name }}
+</a>
+</div>

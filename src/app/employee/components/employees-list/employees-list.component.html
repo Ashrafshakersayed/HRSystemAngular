@@ -1,0 +1,16 @@
+<section class="vehicleList_pg">
+    <div class="inner_header_bx">
+      <div class="grid">
+        <div class="col-12 md:col-9 inner_title_bx">
+          <h1>Employee list</h1>
+        </div><!-- END C/inner_title_bx -->
+        <div class="col-12 md:col-3 inner_actBtn">
+          <p-button (click)="onClickAdd()" pRipple label="Add new employee" icon="pi pi-plus"></p-button>
+        </div><!-- END C/inner_actBtn -->
+      </div><!-- END C/grid -->
+    </div><!-- END C/inner_header_bx -->
+    <article class="gridT_bx">
+      <app-data-list [columns]="cols" [tableActions]="actions" [disablelazyLoading]="true" [dataItems]="dataItems">
+      </app-data-list>
+    </article>
+  </section><!-- END C/_pg -->

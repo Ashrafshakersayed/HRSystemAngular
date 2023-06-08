@@ -1,0 +1,22 @@
+<ng-container *ngFor="let col of columns">
+  <th *ngIf="col.searchable">
+    <p-columnFilter
+      field="{{ col.fieldName }}"
+      matchMode="contains"
+      [showMenu]="false"
+    >
+      <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+        <input
+          type="text"
+          pInputText
+          [ngModel]="value"
+          (ngModelChange)="filter($event)"
+          class="p-inputtext"
+          placeholder="search Here"
+        />
+      </ng-template>
+    </p-columnFilter>
+  </th>
+  <th *ngIf="!col?.searchable"></th>
+</ng-container>
+<th *ngIf="tableActions && tableActions?.length > 0"></th>
