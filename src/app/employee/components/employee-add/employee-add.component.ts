@@ -13,7 +13,6 @@ export class EmployeeAddComponent implements OnInit {
 
   employee = new EmployeeAdd();
   ngOnInit() {
-    // this.employeeS.postEmployee(this.employee).subscribe(console.log)
   }
 
   submitted = false;
@@ -22,7 +21,6 @@ export class EmployeeAddComponent implements OnInit {
     this.submitted = true;
     this.employeeS.postEmployee(this.employee).subscribe((r) => {
       this.router.navigate(['/employees']);
-      console.log(r);
     });
   }
 }

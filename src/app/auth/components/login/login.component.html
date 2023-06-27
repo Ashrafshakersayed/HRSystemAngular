@@ -1,0 +1,41 @@
+<h3>Register new user</h3>
+
+<form (ngSubmit)="onSubmit()" #loginForm="ngForm">
+
+  <div class="form-group col-6 m-2">
+    <label for="emailAddress">email Address</label>
+    <input
+      class="form-control"
+      id="emailAddress"
+      required
+      [(ngModel)]="loginDto.email"
+      name="emailAddress"
+      type="email"
+      #emailAddress="ngModel"
+      [email]="true"
+    />
+    <div *ngIf="emailAddress.invalid && (emailAddress.dirty || emailAddress.touched)" class="alert p-error">
+        <div *ngIf="emailAddress.errors?.['required']">Email address is required.</div>
+      </div>
+  </div>
+
+  <div class="form-group col-6 m-2">
+    <label for="password">Password</label>
+    <input
+      type="password"
+      class="form-control"
+      id="password"
+      [(ngModel)]="loginDto.password"
+      name="password"
+      required
+    />
+  </div>
+
+  <button
+    type="submit"
+    class="btn btn-success m-3"
+    [disabled]="!loginForm.form.valid"
+  >
+    Submit
+  </button>
+</form>
